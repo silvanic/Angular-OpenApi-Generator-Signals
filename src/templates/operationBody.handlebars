@@ -1,0 +1,7 @@
+{{{bodyMethodTsComments}}}{{methodName}}({{>operationParameters}}): Signal<{{{resultType}}}|undefined> {
+    return toSignal(this.{{responseMethodName}}(params, context).pipe(
+      map((r: {{@root.responseClass}}<{{{resultType}}}>): {{{resultType}}} => r.body),
+    ), {
+      injector: this._injector
+    });
+  }

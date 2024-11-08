@@ -1,0 +1,164 @@
+# openapi.yaml
+openapi: 3.0.0
+info:
+  title: My API
+  version: 4.0.10
+servers:
+  -
+    url: 'https://jsonplaceholder.typicode.com'
+    description: 'JSON Placeholder'
+paths:
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      description: Returns a list of all users in the system
+      operationId: getUsers
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /users/{userId}:
+    get:
+      tags:
+        - Users
+      summary: Get a user by ID
+      description: Returns a single user by ID
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID of the user to retrieve
+          schema:
+            type: string
+      security:
+        - 
+          bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /users/{userId}/posts:
+    get:
+      tags:
+        - Users
+      summary: Get all posts for a user
+      description: Returns a list of all posts for a given user
+      operationId: getPostsByUserId
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID of the user to retrieve posts for
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /posts:
+    get:
+      tags:
+        - Posts
+      summary: Get all posts
+      description: Returns a list of all posts in the system
+      operationId: getPosts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+  responses:
+    UnauthorizedError:
+      description: The user is not authorized to access this resource.
+      headers:
+        WWW-Authenticate:
+          description: The authentication challenge header.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      required:
+        - code
+        - message
+    User:
+      description: A simple user model.
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+      required:
+        - id
+        - name
+        - email
+    Post:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+      required:
+        - id
+        - userId
+        - title
+        - body
