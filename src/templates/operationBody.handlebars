@@ -1,7 +1,9 @@
-{{{bodyMethodTsComments}}}{{methodName}}({{>operationParameters}}): Signal<{{{resultType}}}|undefined> {
+{{{bodyMethodTsComments}}}{{methodName}}({{>operationParameters}}): Signal<ResponseWithError<{{{resultType}}}>> {
     return toSignal(this.{{responseMethodName}}(params, context).pipe(
-      map((r: {{@root.responseClass}}<{{{resultType}}}>): {{{resultType}}} => r.body),
+      map((r: {{@root.responseClass}}<{{{resultType}}}>): ResponseWithError<{{{resultType}}}> => ({ data: r.body })),
+      catchError((error) => of({data: null, error: error}))
     ), {
-      injector: this._injector
+      injector: this._injector,
+      initialValue: null
     });
   }

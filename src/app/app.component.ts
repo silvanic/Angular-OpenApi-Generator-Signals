@@ -1,8 +1,16 @@
-import { Component, inject, Signal, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  Signal,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { PostsApiService } from '../../api_modules/services';
 import { JsonPipe } from '@angular/common';
+import { PostsService } from './posts.service';
 import { Post } from '../../api_modules/models';
+import { ResponseWithError } from '../../api_modules/api-configuration';
 
 @Component({
   selector: 'app-root',
@@ -14,10 +22,26 @@ import { Post } from '../../api_modules/models';
 export class AppComponent {
   title = 'openapi-generator-signals';
 
-  private postService = inject(PostsApiService);
-  posts!: Signal<Array<Post> | undefined>;
+  private postService = inject(PostsService);
+
+  posts: Signal<ResponseWithError<Post[]>> = signal(null);
+  post: Signal<ResponseWithError<Post>> = signal(null);
+
+  constructor() {
+    effect(() => {
+      if (this.posts() && this.posts()?.error) {
+        console.error('ERREUR EFFECT', this.posts());
+      }
+    });
+  }
 
   ngOnInit(): void {
-    this.posts = this.postService.getPosts();
+    // this.posts = this.postService.getPosts();
+  }
+
+  refresh() {
+    this.post = this.postService.getPostById(
+      Math.floor(Math.random() * 10).toString()
+    );
   }
 }

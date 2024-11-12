@@ -21,7 +21,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([errorInterceptor])),
     importProvidersFrom(
       ApiModule.forRoot({
-        rootUrl: 'https://jsonplaceholder.typicode.com/azer',
+        rootUrl: 'https://jsonplaceholder.typicode.com',
       })
     ),
   ],

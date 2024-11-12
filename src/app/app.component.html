@@ -1,7 +1,16 @@
 <main class="main">
+  <button (click)="refresh()">Refresh</button>
+  @if(post()){
   <pre>
-    {{ posts() | json }}
+      {{ post() | json }}
   </pre>
+  }@else{
+  <div>Chargement...</div>
+  } @if(posts()){
+  <pre [style]="'background:' + (posts()?.error ? 'orange' : 'lime')">
+        {{ posts() | json }}
+  </pre>
+  }
 </main>
 
 <router-outlet />
